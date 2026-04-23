@@ -32,7 +32,7 @@ The dataset contains about **4,753 images** across **9 classes**:
 ## Setup
 1. Clone the repository.
 2. Install dependencies with:
-`python3 -m venv .venv`
+`python -m venv .venv`
 `source .venv/bin/activate`
 `pip install -r requirements.txt`
 3. Download the dataset from Kaggle.

@@ -69,6 +69,14 @@ def _build_dataset(paths, labels, image_size, batch_size, training, preprocess_f
 
     dataset = dataset.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 
+    # Camera blurring simulation
+    def random_blur(image, label):
+        if tf.random.uniform(()) > 0.5:
+            image = tf.expand_dims(image, 0)
+            image = tf.nn.avg_pool2d(image, ksize=3, strides=1, padding="SAME")
+            image = tf.squeeze(image, 0)
+        return image, label
+
     # Shuffle and augment only the training dataset to improve generalization and prevent overfitting.
     if training:
         dataset = dataset.shuffle(len(paths), seed=42, reshuffle_each_iteration=True)
@@ -77,6 +85,7 @@ def _build_dataset(paths, labels, image_size, batch_size, training, preprocess_f
                 lambda image, label: (augmenter(image, training=True), label),
                 num_parallel_calls=tf.data.AUTOTUNE,
             )
+        dataset = dataset.map(random_blur, num_parallel_calls=tf.data.AUTOTUNE)
 
     dataset = dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
     return dataset
@@ -135,6 +144,8 @@ def prepare_datasets(
             layers.RandomRotation(0.05),
             layers.RandomZoom(0.1),
             layers.RandomTranslation(0.1, 0.1),
+            layers.RandomBrightness(0.2),
+            layers.RandomContrast(0.2),
         ]
     )
 

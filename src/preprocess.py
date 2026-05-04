@@ -144,8 +144,8 @@ def prepare_datasets(
             layers.RandomRotation(0.05),
             layers.RandomZoom(0.1),
             layers.RandomTranslation(0.1, 0.1),
-            layers.RandomBrightness(0.2),
-            layers.RandomContrast(0.2),
+            layers.RandomBrightness(0.2/255),
+            layers.RandomContrast(0.2/255),
         ]
     )
 
